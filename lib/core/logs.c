@@ -328,7 +328,7 @@ lws_log_use_cx_file(struct lws_log_cx *cx, int _new)
 {
 	int fd;
 
-	if (_new > 0 && cx->refcount == 1) {
+	if (_new > 0 && atomic_read(&cx->refcount) == 1) {
 		fd = open((const char *)cx->opaque,
 				LWS_O_CREAT | LWS_O_TRUNC | LWS_O_WRONLY, 0600);
 		if (fd < 0)
@@ -341,7 +341,7 @@ lws_log_use_cx_file(struct lws_log_cx *cx, int _new)
 
 	fd = (int)(intptr_t)cx->stg;
 
-	if (_new <= 0 && cx->refcount == 0 && fd >= 0) {
+	if (_new <= 0 && atomic_read(&cx->refcount) == 0 && fd >= 0) {
 		close(fd);
 		cx->stg = (void *)(intptr_t)-1;
 	}
@@ -510,10 +510,10 @@ lwsl_refcount_cx(lws_log_cx_t *cx, int _new)
 		return;
 
 	if (_new > 0)
-		cx->refcount++;
+		atomic_fetch_add(&cx->refcount, 1);
 	else {
-		assert(cx->refcount);
-		cx->refcount--;
+		assert(atomic_read(&cx->refcount));
+		atomic_fetch_sub(&cx->refcount, 1);
 	}
 
 	if (cx->refcount_cb)

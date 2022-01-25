@@ -314,6 +314,8 @@ typedef int suseconds_t;
  * are all NOPs and no pthread type or api is referenced.
  */
 
+#include <stdatomic.h>
+
 #if LWS_MAX_SMP > 1
 
 #include <pthread.h>

@@ -97,7 +97,7 @@ typedef struct lws_log_cx {
 	/**< ignored by lws, may be used a storage by refcount_cb / emit_cx */
 	uint32_t			lll_flags;
 	/**< mask of log levels we want to emit in this context */
-	int32_t				refcount;
+	atomic_t			refcount;
 	/**< refcount of objects bound to this log context */
 } lws_log_cx_t;
 
