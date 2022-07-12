@@ -270,7 +270,7 @@ hs2:
 			lwsl_err("Failed to generate handshake for client\n");
 			lws_close_free_wsi(wsi, LWS_CLOSE_STATUS_NOSTATUS,
 					   "chs");
-			return 0;
+			return -1;
 		}
 
 		/* send our request to the server */
@@ -1051,7 +1051,7 @@ bail2:
 	/* closing will free up his parsing allocations */
 	lws_close_free_wsi(wsi, (enum lws_close_status)close_reason, "c hs interp");
 
-	return 1;
+	return -1;
 }
 #endif
 
