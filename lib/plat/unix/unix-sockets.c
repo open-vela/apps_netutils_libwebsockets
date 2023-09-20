@@ -171,7 +171,7 @@ lws_plat_set_socket_options(struct lws_vhost *vhost, int fd, int unix_skt)
 
 	/* Disable Nagle */
 	optval = 1;
-#if defined (__sun) || defined(__QNX__)
+#if defined (__sun) || defined(__QNX__) || defined(__NuttX__)
 	if (!unix_skt && setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const void *)&optval, optlen) < 0)
 		return 1;
 #elif !defined(__APPLE__) && \
@@ -237,7 +237,8 @@ lws_plat_set_socket_options_ip(lws_sockfd_type fd, uint8_t pri, int lws_flags)
       !defined(__sun) && \
       !defined(__HAIKU__) && \
       !defined(__CYGWIN__) && \
-      !defined(__QNX__)
+      !defined(__QNX__) && \
+      !defined(__NuttX__)
 
 	/* the BSDs don't have SO_PRIORITY */
 
