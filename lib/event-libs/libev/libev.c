@@ -136,6 +136,7 @@ lws_ev_sigint_cb(struct ev_loop *loop, struct ev_signal *watcher, int revents)
 static int
 elops_listen_init_ev(struct lws_dll2 *d, void *user)
 {
+#if defined(LWS_WITH_SERVER)
 	struct lws *wsi = lws_container_of(d, struct lws, listen_list);
 	struct lws_context *context = (struct lws_context *)user;
 	struct lws_context_per_thread *pt = &context->pt[(int)wsi->tsi];
@@ -150,6 +151,7 @@ elops_listen_init_ev(struct lws_dll2 *d, void *user)
 	ev_io_init(&vh_to_priv_ev(vh)->w_accept.watcher,
 		   lws_accept_cb, wsi->desc.sockfd, EV_READ);
 	ev_io_start(ptpr->io_loop, &vh_to_priv_ev(vh)->w_accept.watcher);
+#endif
 
 	return 0;
 }
@@ -240,6 +242,7 @@ elops_init_pt_ev(struct lws_context *context, void *_loop, int tsi)
 static int
 elops_listen_destroy_ev(struct lws_dll2 *d, void *user)
 {
+#if defined(LWS_WITH_SERVER)
 	struct lws *wsi = lws_container_of(d, struct lws, listen_list);
 	struct lws_context *context = (struct lws_context *)user;
 	struct lws_context_per_thread *pt = &context->pt[(int)wsi->tsi];
@@ -247,7 +250,7 @@ elops_listen_destroy_ev(struct lws_dll2 *d, void *user)
 	struct lws_vhost *vh = wsi->a.vhost;
 
 	ev_io_stop(ptpr->io_loop, &vh_to_priv_ev(vh)->w_accept.watcher);
-
+#endif
 	return 0;
 }
 
