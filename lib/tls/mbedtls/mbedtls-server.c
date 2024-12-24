@@ -264,7 +264,7 @@ lws_tls_server_new_nonblocking(struct lws *wsi, lws_sockfd_type accept_fd)
 	return 0;
 }
 
-#if defined(LWS_AMAZON_RTOS)
+#if defined(LWS_AMAZON_RTOS) || defined(__NuttX__)
 enum lws_ssl_capable_status
 #else
 int

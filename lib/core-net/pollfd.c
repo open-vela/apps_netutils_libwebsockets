@@ -287,8 +287,14 @@ __insert_wsi_socket_into_fds(struct lws_context *context, struct lws *wsi)
 	}
 
 #if !defined(_WIN32)
+#if defined(__NuttX__) && defined(CONFIG_FDCHECK)
+	if (!wsi->a.context->max_fds_unrelated_to_ulimit &&
+	    (fdcheck_restore(wsi->desc.sockfd)) - lws_plat_socket_offset() >=
+	    (int)context->max_fds) {
+#else
 	if (!wsi->a.context->max_fds_unrelated_to_ulimit &&
 	    wsi->desc.sockfd - lws_plat_socket_offset() >= (int)context->max_fds) {
+#endif
 		lwsl_cx_err(context, "Socket fd %d is too high (%d) offset %d",
 			 wsi->desc.sockfd, context->max_fds,
 			 lws_plat_socket_offset());
@@ -370,8 +376,14 @@ __remove_wsi_socket_from_fds(struct lws *wsi)
 //	__dump_fds(pt, "pre remove");
 
 #if !defined(_WIN32)
+#if defined(__NuttX__) && defined(CONFIG_FDCHECK)
+	if (!wsi->a.context->max_fds_unrelated_to_ulimit &&
+	    (fdcheck_restore(wsi->desc.sockfd)) - lws_plat_socket_offset() >
+	    (int)context->max_fds) {
+#else
 	if (!wsi->a.context->max_fds_unrelated_to_ulimit &&
 	    wsi->desc.sockfd - lws_plat_socket_offset() > (int)context->max_fds) {
+#endif
 		lwsl_wsi_err(wsi, "fd %d too high (%d)",
 				   wsi->desc.sockfd,
 				   context->max_fds);

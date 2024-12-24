@@ -298,6 +298,7 @@ typedef int suseconds_t;
 
 #endif
 #else
+#include <openssl/base.h>
 #include <openssl/ssl.h>
 #if !defined(LWS_WITH_MBEDTLS)
 #include <openssl/err.h>
