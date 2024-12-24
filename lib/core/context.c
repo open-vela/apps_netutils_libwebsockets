@@ -31,7 +31,7 @@
 static const char *library_version = LWS_LIBRARY_VERSION;
 
 #if defined(LWS_WITH_MBEDTLS)
-extern const char *mbedtls_client_preload_filepath;
+const char *mbedtls_client_preload_filepath;
 #endif
 
 #if defined(LWS_HAVE_SYS_RESOURCE_H)
