@@ -33,7 +33,11 @@ wsi_from_fd(const struct lws_context *context, int fd)
 	struct lws **p, **done;
 
 	if (!context->max_fds_unrelated_to_ulimit)
+#if defined(__NuttX__) && defined(CONFIG_FDCHECK)
+		return context->lws_lookup[(fdcheck_restore(fd)) - lws_plat_socket_offset()];
+#else
 		return context->lws_lookup[fd - lws_plat_socket_offset()];
+#endif
 
 	/* slow fds handling */
 
@@ -93,8 +97,13 @@ sanity_assert_no_sockfd_traces(const struct lws_context *context,
 	if (sfd == LWS_SOCK_INVALID || !context->lws_lookup)
 		return 0;
 
+#if defined(__NuttX__) && defined(CONFIG_FDCHECK)
+	if (!context->max_fds_unrelated_to_ulimit &&
+	    context->lws_lookup[fdcheck_restore(sfd) - lws_plat_socket_offset()]) {
+#else
 	if (!context->max_fds_unrelated_to_ulimit &&
 	    context->lws_lookup[sfd - lws_plat_socket_offset()]) {
+#endif
 		assert(0); /* the fd is still in use */
 		return 1;
 	}
@@ -129,11 +138,19 @@ insert_wsi(const struct lws_context *context, struct lws *wsi)
 		return 0;
 
 	if (!context->max_fds_unrelated_to_ulimit) {
+#if defined(__NuttX__) && defined(CONFIG_FDCHECK)
+		assert(context->lws_lookup[fdcheck_restore(wsi->desc.sockfd) -
+		                           lws_plat_socket_offset()] == 0);
+
+		context->lws_lookup[fdcheck_restore(wsi->desc.sockfd) - \
+				  lws_plat_socket_offset()] = wsi;
+#else
 		assert(context->lws_lookup[wsi->desc.sockfd -
 		                           lws_plat_socket_offset()] == 0);
 
 		context->lws_lookup[wsi->desc.sockfd - \
 				  lws_plat_socket_offset()] = wsi;
+#endif
 
 		return 0;
 	}
@@ -175,7 +192,11 @@ delete_from_fd(const struct lws_context *context, int fd)
 
 	if (!context->max_fds_unrelated_to_ulimit) {
 		if (context->lws_lookup)
+#if defined(__NuttX__) && defined(CONFIG_FDCHECK)
+			context->lws_lookup[fdcheck_restore(fd) - lws_plat_socket_offset()] = NULL;
+#else
 			context->lws_lookup[fd - lws_plat_socket_offset()] = NULL;
+#endif
 
 		return;
 	}
