@@ -75,7 +75,7 @@
    #include <mbedtls/x509_csr.h>
    #include <mbedtls/ecp.h>
    #include <mbedtls/ecdsa.h>
-  #if defined(LWS_AMAZON_LINUX)
+  #if defined(LWS_AMAZON_LINUX) || defined(__NuttX__)
    #include "ssl.h" /* wrapper !!!! */
   #else
    #include "openssl/ssl.h" /* wrapper !!!! */
