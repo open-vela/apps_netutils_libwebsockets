@@ -185,7 +185,7 @@ test_nsc1(void)
 	ci.cx = cx;
 	ci.ops = &lws_cache_ops_nscookiejar;
 	ci.name = "NSC";
-	ci.u.nscookiejar.filepath = "./cookies.txt";
+	ci.u.nscookiejar.filepath = "/tmp/cookies.txt";
 
 	nsc = lws_cache_create(&ci);
 	if (!nsc)
