@@ -214,7 +214,7 @@ static int lws_frag_start(struct lws *wsi, int hdr_token_idx)
 
 	ah->hdr_token_idx = -1;
 
-	lwsl_header("%s: token %d ah->pos = %d, ah->nfrag = %d\n",
+	lwsl_header("%s: token %d ah->pos = %" PRId32 ", ah->nfrag = %d\n",
 		   __func__, hdr_token_idx, ah->pos, ah->nfrag);
 
 	if (!hdr_token_idx) {
