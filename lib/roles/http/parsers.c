@@ -1235,7 +1235,7 @@ swallow:
 				lws_strnncpy(dotstar,
 					&ah->data[ah->unk_pos + UHO_NAME],
 					uhlen, sizeof(dotstar));
-				lwsl_debug("%s: unk header %d '%s'\n",
+				lwsl_debug("%s: unk header %" PRId32 " '%s'\n",
 					    __func__,
 					    ah->pos - (ah->unk_pos + UHO_NAME),
 					    dotstar);

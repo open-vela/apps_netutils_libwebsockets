@@ -147,7 +147,7 @@ _lws_change_pollfd(struct lws *wsi, int _and, int _or, struct lws_pollargs *pa)
 
 	pfd = &pt->fds[wsi->position_in_fds_table];
 	pa->fd = wsi->desc.sockfd;
-	lwsl_wsi_debug(wsi, "fd %d events %d -> %d", pa->fd, pfd->events,
+	lwsl_wsi_debug(wsi, "fd %d events %"PRId32" -> %"PRId32, pa->fd, pfd->events,
 						(pfd->events & ~_and) | _or);
 	pa->prev_events = pfd->events;
 	pa->events = pfd->events = (short)((pfd->events & ~_and) | _or);

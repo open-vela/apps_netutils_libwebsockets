@@ -113,7 +113,8 @@ rops_handle_POLLIN_h2(struct lws_context_per_thread *pt, struct lws *wsi,
 	}
 #endif
 
-	 lwsl_info("%s: %s wsistate 0x%x, events %d, revents %d, pollout %d\n", __func__,
+	 lwsl_info("%s: %s wsistate 0x%x, events %" PRId32 ","
+		   "revents %" PRId32 ", pollout %" PRId32 "\n", __func__,
 		   wsi->lc.gutag, (unsigned int)wsi->wsistate,
 		   pollfd->events, pollfd->revents,
 		   pollfd->revents & LWS_POLLOUT);
