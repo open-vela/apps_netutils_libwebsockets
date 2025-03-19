@@ -33,7 +33,7 @@ rops_handle_POLLIN_mqtt(struct lws_context_per_thread *pt, struct lws *wsi,
 	int n = 0;
 	char buffered = 0;
 
-	lwsl_debug("%s: wsistate 0x%x, %s pollout %d\n", __func__,
+	lwsl_debug("%s: wsistate 0x%x, %s pollout %" PRId32 "\n", __func__,
 		   (unsigned int)wsi->wsistate,  wsi->a.protocol->name,
 		   pollfd->revents);
 
