@@ -153,13 +153,14 @@ callback_http(struct lws *wsi, enum lws_callback_reasons reason,
 #if 0
 		lwsl_hexdump_notice(in, len);
 #endif
+		interrupted = 1;
 
 		return 0; /* don't passthru */
 
 	/* uninterpreted http content */
 	case LWS_CALLBACK_RECEIVE_CLIENT_HTTP:
 		{
-			char buffer[1024 + LWS_PRE];
+			char buffer[512 + LWS_PRE];
 			char *px = buffer + LWS_PRE;
 			int lenx = sizeof(buffer) - LWS_PRE;
 
@@ -404,9 +405,11 @@ int main(int argc, const char **argv)
 	 */
 	if (lws_cmdline_option(argc, argv, "-w"))
 		/* option to confirm we are validating against the right cert */
+#if !defined(__NuttX__)
 		info.client_ssl_ca_filepath = "./wrong.cer";
 	else
 		info.client_ssl_ca_filepath = "./warmcat.com.cer";
+#endif
 #endif
 #if 0
 	n = open("./warmcat.com.cer", O_RDONLY);

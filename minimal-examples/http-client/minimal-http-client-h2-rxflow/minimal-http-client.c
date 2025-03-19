@@ -91,12 +91,14 @@ callback_http(struct lws *wsi, enum lws_callback_reasons reason,
 					putchar('.');
 		}
 #endif
+		interrupted = 1;
+
 		return 0; /* don't passthru */
 
 	/* uninterpreted http content */
 	case LWS_CALLBACK_RECEIVE_CLIENT_HTTP:
 		{
-			char buffer[1024 + LWS_PRE];
+			char buffer[512 + LWS_PRE];
 			char *px = buffer + LWS_PRE;
 			int lenx = sizeof(buffer) - LWS_PRE;
 
@@ -288,7 +290,9 @@ int main(int argc, const char **argv)
 	 * OpenSSL uses the system trust store.  mbedTLS has to be told which
 	 * CA to trust explicitly.
 	 */
+#if !defined(__NuttX__)
 	info.client_ssl_ca_filepath = "./warmcat.com.cer";
+#endif
 #endif
 #if 0
 	n = open("./warmcat.com.cer", O_RDONLY);

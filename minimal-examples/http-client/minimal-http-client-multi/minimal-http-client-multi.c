@@ -129,7 +129,7 @@ bail:
 #endif
 
 #if defined(LWS_WITH_CONMON)
-void
+static void
 dump_conmon_data(struct lws *wsi)
 {
 	const struct addrinfo *ai;
@@ -209,6 +209,7 @@ callback_http(struct lws *wsi, enum lws_callback_reasons reason,
 	case LWS_CALLBACK_RECEIVE_CLIENT_HTTP_READ:
 		lwsl_user("RECEIVE_CLIENT_HTTP_READ: conn %d: read %d\n", idx, (int)len);
 		lwsl_hexdump_info(in, len);
+		intr = 1;
 		return 0; /* don't passthru */
 
 	case LWS_CALLBACK_CLIENT_APPEND_HANDSHAKE_HEADER:
@@ -227,7 +228,7 @@ callback_http(struct lws *wsi, enum lws_callback_reasons reason,
 	/* uninterpreted http content */
 	case LWS_CALLBACK_RECEIVE_CLIENT_HTTP:
 		{
-			char buffer[1024 + LWS_PRE];
+			char buffer[512 + LWS_PRE];
 			char *px = buffer + LWS_PRE;
 			int lenx = sizeof(buffer) - LWS_PRE;
 
@@ -592,7 +593,9 @@ int main(int argc, const char **argv)
 	 * OpenSSL uses the system trust store.  mbedTLS has to be told which
 	 * CA to trust explicitly.
 	 */
+#if !defined(__NuttX__)
 	info.client_ssl_ca_filepath = "./warmcat.com.cer";
+#endif
 #endif
 
 	/* vhost option allowing tls session reuse, requires
