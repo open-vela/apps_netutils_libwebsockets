@@ -116,7 +116,9 @@ int main(int argc, const char **argv)
 	 * OpenSSL uses the system trust store.  mbedTLS has to be told which
 	 * CA to trust explicitly.
 	 */
+#if !defined(__NuttX__)
 	info.client_ssl_ca_filepath = "./libwebsockets.org.cer";
+#endif
 #endif
 
 	/*

@@ -76,6 +76,11 @@ callback_minimal_pingtest(struct lws *wsi, enum lws_callback_reasons reason,
 		lwsl_user("%s: established\n", __func__);
 		break;
 
+	case LWS_CALLBACK_CLIENT_RECEIVE_PONG:
+		lwsl_user("reveive pong\n");
+		interrupted = 1;
+		break;
+
 	default:
 		break;
 	}
@@ -140,7 +145,9 @@ int main(int argc, const char **argv)
 	 * OpenSSL uses the system trust store.  mbedTLS has to be told which
 	 * CA to trust explicitly.
 	 */
+#if !defined(__NuttX__)
 	info.client_ssl_ca_filepath = "./libwebsockets.org.cer";
+#endif
 #endif
 
 	if ((p = lws_cmdline_option(argc, argv, "--protocol")))
@@ -163,6 +170,7 @@ int main(int argc, const char **argv)
 		return 1;
 	}
 
+	memset(&sul, 0, sizeof(lws_sorted_usec_list_t));
 	lws_sul_schedule(context, 0, &sul, connect_cb, 100);
 
 	while (n >= 0 && !interrupted)

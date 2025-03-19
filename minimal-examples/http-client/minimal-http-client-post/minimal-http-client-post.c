@@ -29,7 +29,7 @@ callback_http(struct lws *wsi, enum lws_callback_reasons reason,
 	      void *user, void *in, size_t len)
 {
 	struct pss *pss = (struct pss *)user;
-	char buf[LWS_PRE + 1024], *start = &buf[LWS_PRE], *p = start,
+	char buf[LWS_PRE + 512], *start = &buf[LWS_PRE], *p = start,
 		*end = &buf[sizeof(buf) - LWS_PRE - 1];
 	int n;
 
@@ -65,6 +65,7 @@ callback_http(struct lws *wsi, enum lws_callback_reasons reason,
 	case LWS_CALLBACK_RECEIVE_CLIENT_HTTP_READ:
 		lwsl_user("RECEIVE_CLIENT_HTTP_READ: read %d\n", (int)len);
 		lwsl_hexdump_notice(in, len);
+		interrupted = 1;
 		return 0; /* don't passthru */
 
 	case LWS_CALLBACK_RECEIVE_CLIENT_HTTP:
@@ -232,7 +233,9 @@ int main(int argc, const char **argv)
 	 * CA to trust explicitly.
 	 */
 	if (!lws_cmdline_option(argc, argv, "-l"))
+#if !defined(__NuttX__)
 		info.client_ssl_ca_filepath = "./libwebsockets.org.cer";
+#endif
 #endif
 
 	context = lws_create_context(&info);

@@ -101,6 +101,7 @@ callback_minimal(struct lws *wsi, enum lws_callback_reasons reason,
 
 	case LWS_CALLBACK_CLIENT_RECEIVE:
 		lwsl_hexdump_notice(in, len);
+		interrupted = 1;
 		break;
 
 	case LWS_CALLBACK_CLIENT_ESTABLISHED:
@@ -180,7 +181,9 @@ int main(int argc, const char **argv)
 	 * OpenSSL uses the system trust store.  mbedTLS has to be told which
 	 * CA to trust explicitly.
 	 */
+#if !defined(__NuttX__)
 	info.client_ssl_ca_filepath = "./libwebsockets.org.cer";
+#endif
 #endif
 
 	if ((p = lws_cmdline_option(argc, argv, "--protocol")))
@@ -214,6 +217,8 @@ int main(int argc, const char **argv)
 		lwsl_err("lws init failed\n");
 		return 1;
 	}
+
+	memset(&mco.sul, 0, sizeof(lws_sorted_usec_list_t));
 
 	/* schedule the first client connection attempt to happen immediately */
 	lws_sul_schedule(context, 0, &mco.sul, connect_client, 1);
