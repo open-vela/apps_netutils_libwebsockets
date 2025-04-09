@@ -335,6 +335,21 @@ system_notify_cb(lws_state_manager_t *mgr, lws_state_notify_link_t *link,
 	return 0;
 }
 
+static void
+initialize_static_variables(void)
+{
+	interrupted = 0;
+	bad = 1;
+	status = 0;
+	conmon = 0;
+#if defined(LWS_WITH_HTTP2)
+	long_poll = 0;
+#endif
+	client_wsi = NULL;
+	ba_user = NULL;
+	ba_password = NULL;
+}
+
 int main(int argc, const char **argv)
 {
 	lws_state_notify_link_t notifier = { { NULL, NULL, NULL },
@@ -346,6 +361,8 @@ int main(int argc, const char **argv)
 	struct args args;
 	const char *p;
 	// uint8_t memcert[4096];
+
+	initialize_static_variables();
 
 	args.argc = argc;
 	args.argv = argv;

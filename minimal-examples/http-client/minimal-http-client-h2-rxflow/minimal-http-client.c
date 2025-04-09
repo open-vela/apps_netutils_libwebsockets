@@ -233,6 +233,16 @@ system_notify_cb(lws_state_manager_t *mgr, lws_state_notify_link_t *link,
 	return !lws_client_connect_via_info(&i);
 }
 
+static void
+initialize_static_variables(void)
+{
+	interrupted = 0;
+	bad = 1;
+	status = 0;
+	each = 1024;
+	client_wsi = NULL;
+}
+
 int main(int argc, const char **argv)
 {
 	lws_state_notify_link_t notifier = { { NULL, NULL, NULL },
@@ -243,6 +253,8 @@ int main(int argc, const char **argv)
 	struct args args;
 	int n = 0;
 	// uint8_t memcert[4096];
+
+	initialize_static_variables();
 
 	args.argc = argc;
 	args.argv = argv;

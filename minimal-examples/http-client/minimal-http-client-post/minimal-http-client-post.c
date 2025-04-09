@@ -184,6 +184,17 @@ sigint_handler(int sig)
 	interrupted = 1;
 }
 
+static void
+initialize_static_variables(void)
+{
+	interrupted = 0;
+	bad = 0;
+	status = 0;
+	count_clients = 1;
+	completed = 0;
+	memset(client_wsi, 0, sizeof(client_wsi));
+}
+
 int main(int argc, const char **argv)
 {
 	struct lws_context_creation_info info;
@@ -191,6 +202,8 @@ int main(int argc, const char **argv)
 	struct lws_context *context;
 	const char *p;
 	int n = 0;
+
+	initialize_static_variables();
 
 	signal(SIGINT, sigint_handler);
 

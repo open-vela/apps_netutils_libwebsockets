@@ -513,6 +513,22 @@ stagger_cb(lws_sorted_usec_list_t *sul)
 	lws_sul_schedule(context, 0, &sul_stagger, stagger_cb, next);
 }
 
+static void
+initialize_static_variables(void)
+{
+	completed = 0;
+	failed = 0;
+	numbered = 0;
+	stagger_idx = 0;
+	posting = 0;
+	count = COUNT;
+	staggered = 0;
+	intr = 0;
+	context = NULL;
+	memset(client_wsi, 0, sizeof(client_wsi));
+	memset(urlpath, 0, sizeof(urlpath));
+}
+
 int main(int argc, const char **argv)
 {
 	lws_state_notify_link_t notifier = { { NULL, NULL, NULL },
@@ -524,6 +540,7 @@ int main(int argc, const char **argv)
 #if defined(LWS_WITH_TLS_SESSIONS)
 	int pl = 0;
 #endif
+	initialize_static_variables();
 
 	memset(&info, 0, sizeof info); /* otherwise uninitialized garbage */
 	memset(&i, 0, sizeof i); /* otherwise uninitialized garbage */

@@ -71,6 +71,15 @@ sigint_handler(int sig)
 	interrupted = 1;
 }
 
+static void
+initialize_static_variables(void)
+{
+	interrupted = 0;
+	rx_seen = 0;
+	test = 0;
+	client_wsi = NULL;
+}
+
 int main(int argc, const char **argv)
 {
 	struct lws_context_creation_info info;
@@ -84,6 +93,8 @@ int main(int argc, const char **argv)
 		/* | LLL_INFO */ /* | LLL_PARSER */ /* | LLL_HEADER */
 		/* | LLL_EXT */ /* | LLL_CLIENT */ /* | LLL_LATENCY */
 		/* | LLL_DEBUG */;
+
+	initialize_static_variables();
 
 	signal(SIGINT, sigint_handler);
 	if ((p = lws_cmdline_option(argc, argv, "-d")))
