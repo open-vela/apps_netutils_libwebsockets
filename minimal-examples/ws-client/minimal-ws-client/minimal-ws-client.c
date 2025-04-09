@@ -147,11 +147,23 @@ sigint_handler(int sig)
 	interrupted = 1;
 }
 
+static void
+initialize_static_variables(void)
+{
+	interrupted = 0;
+	port = 443;
+	ssl_connection = LCCSCF_USE_SSL;
+	context = NULL;
+	memset(&mco, 0, sizeof(mco));
+}
+
 int main(int argc, const char **argv)
 {
 	struct lws_context_creation_info info;
 	const char *p;
 	int n = 0;
+
+	initialize_static_variables();
 
 	signal(SIGINT, sigint_handler);
 	memset(&info, 0, sizeof info);

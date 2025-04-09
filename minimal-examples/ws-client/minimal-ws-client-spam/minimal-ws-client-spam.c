@@ -193,6 +193,24 @@ sigint_handler(int sig)
 	interrupted = 1;
 }
 
+static void
+initialize_static_variables(void)
+{
+	interrupted = 0;
+	port = 443;
+	ssl_connection = LCCSCF_USE_SSL;
+	concurrent = 3;
+	conn = 0;
+	tries = 0;
+	est = 0;
+	errors = 0;
+	closed = 0;
+	sent = 0;
+	limit = 15;
+	context = NULL;
+	memset(clients, 0, sizeof(clients));
+}
+
 int main(int argc, const char **argv)
 {
 	struct lws_context_creation_info info;
@@ -204,6 +222,8 @@ int main(int argc, const char **argv)
 			/* | LLL_INFO */ /* | LLL_PARSER */ /* | LLL_HEADER */
 			/* | LLL_EXT */ /* | LLL_CLIENT */ /* | LLL_LATENCY */
 			/* | LLL_DEBUG */;
+
+	initialize_static_variables();
 
 	signal(SIGINT, sigint_handler);
 
