@@ -881,9 +881,6 @@ __lws_close_free_wsi_final(struct lws *wsi)
 	if (!wsi->shadow &&
 	    lws_socket_is_valid(wsi->desc.sockfd) && !lws_ssl_close(wsi)) {
 		lwsl_wsi_debug(wsi, "fd %d", wsi->desc.sockfd);
-		n = compatible_close(wsi->desc.sockfd);
-		if (n)
-			lwsl_wsi_debug(wsi, "closing: close ret %d", LWS_ERRNO);
 
 		__remove_wsi_socket_from_fds(wsi);
 		if (lws_socket_is_valid(wsi->desc.sockfd))
@@ -894,6 +891,10 @@ __lws_close_free_wsi_final(struct lws *wsi)
 #endif
 
 		sanity_assert_no_sockfd_traces(wsi->a.context, wsi->desc.sockfd);
+
+		n = compatible_close(wsi->desc.sockfd);
+		if (n)
+			lwsl_wsi_debug(wsi, "closing: close ret %d", LWS_ERRNO);
 	}
 
 	/* ... if we're closing the cancel pipe, account for it */
