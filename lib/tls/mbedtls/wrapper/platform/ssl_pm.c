@@ -703,13 +703,22 @@ int x509_pm_load_file(X509 *x, const char *path)
     int ret;
     struct x509_pm *x509_pm = (struct x509_pm *)x->x509_pm;
 
-    mbedtls_x509_crt_free(&x509_pm->x509_crt);
-    mbedtls_x509_crt_init(&x509_pm->x509_crt);
-    ret = mbedtls_x509_crt_parse_file(&x509_pm->x509_crt, path);
+    if (!x509_pm->x509_crt) {
+        x509_pm->x509_crt = ssl_mem_malloc(sizeof(mbedtls_x509_crt) + 80);
+        if (!x509_pm->x509_crt) {
+            SSL_DEBUG(SSL_PLATFORM_ERROR_LEVEL, "no enough memory > (x509_pm->x509_crt)");
+            return -1;
+        }
+        mbedtls_x509_crt_init(x509_pm->x509_crt);
+    }
+
+    ret = mbedtls_x509_crt_parse_file(x509_pm->x509_crt, path);
     if (ret) {
         SSL_DEBUG(SSL_PLATFORM_ERROR_LEVEL,
                   "mbedtls_x509_crt_parse_file return -0x%x", -ret);
-        mbedtls_x509_crt_free(&x509_pm->x509_crt);
+        mbedtls_x509_crt_free(x509_pm->x509_crt);
+        ssl_mem_free(x509_pm->x509_crt);
+        x509_pm->x509_crt = NULL;
         return -1;
     }
 
@@ -721,13 +730,22 @@ int x509_pm_load_path(X509 *x, const char *path)
     int ret;
     struct x509_pm *x509_pm = (struct x509_pm *)x->x509_pm;
 
-    mbedtls_x509_crt_free(&x509_pm->x509_crt);
-    mbedtls_x509_crt_init(&x509_pm->x509_crt);
-    ret = mbedtls_x509_crt_parse_path(&x509_pm->x509_crt, path);
+    if (!x509_pm->x509_crt) {
+        x509_pm->x509_crt = ssl_mem_malloc(sizeof(mbedtls_x509_crt) + 80);
+        if (!x509_pm->x509_crt) {
+            SSL_DEBUG(SSL_PLATFORM_ERROR_LEVEL, "no enough memory > (x509_pm->x509_crt)");
+            return -1;
+        }
+        mbedtls_x509_crt_init(x509_pm->x509_crt);
+    }
+
+    ret = mbedtls_x509_crt_parse_path(x509_pm->x509_crt, path);
     if (ret) {
         SSL_DEBUG(SSL_PLATFORM_ERROR_LEVEL,
-                  "mbedtls_x509_crt_parse_file return -0x%x", -ret);
-        mbedtls_x509_crt_free(&x509_pm->x509_crt);
+                  "mbedtls_x509_crt_parse_path return -0x%x", -ret);
+        mbedtls_x509_crt_free(x509_pm->x509_crt);
+        ssl_mem_free(x509_pm->x509_crt);
+        x509_pm->x509_crt = NULL;
         return -1;
     }
 
