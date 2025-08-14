@@ -241,11 +241,6 @@ no_client_cert:
 	return 1;
 }
 
-int ERR_get_error(void)
-{
-	return 0;
-}
-
 enum lws_ssl_capable_status
 lws_tls_client_connect(struct lws *wsi, char *errbuf, size_t elen)
 {
