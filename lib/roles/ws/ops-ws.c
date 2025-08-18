@@ -1215,6 +1215,8 @@ drain:
 	    lws_buflist_total_len(&wsi->buflist))
 		pending = 9999999;
 #endif
+	if (pending > 0 && lws_buflist_next_segment_len(&wsi->buflist, NULL))
+		return LWS_HPI_RET_HANDLED;
 
 	if (pending) {
 		if (lws_is_ws_with_ext(wsi))
