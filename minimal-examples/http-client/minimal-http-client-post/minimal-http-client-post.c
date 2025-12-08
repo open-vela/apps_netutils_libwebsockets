@@ -235,6 +235,8 @@ int main(int argc, const char **argv)
 	if (!lws_cmdline_option(argc, argv, "-l"))
 #if !defined(__NuttX__)
 		info.client_ssl_ca_filepath = "./libwebsockets.org.cer";
+#else
+		info.client_ssl_ca_filepath = NULL;
 #endif
 #endif
 

@@ -409,6 +409,8 @@ int main(int argc, const char **argv)
 		info.client_ssl_ca_filepath = "./wrong.cer";
 	else
 		info.client_ssl_ca_filepath = "./warmcat.com.cer";
+#else
+		info.client_ssl_ca_filepath = NULL;
 #endif
 #endif
 #if 0
